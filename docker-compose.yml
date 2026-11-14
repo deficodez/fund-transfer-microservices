@@ -1,0 +1,22 @@
+# Local infrastructure for the whole fund-transfer system.
+# Today: only the Account database. Later phases add transfer-db, ledger-db and Kafka here.
+services:
+  account-db:
+    image: postgres:16-alpine
+    container_name: account-db
+    environment:
+      POSTGRES_DB: account_db
+      POSTGRES_USER: account
+      POSTGRES_PASSWORD: account
+    ports:
+      - "5433:5432"
+    volumes:
+      - account-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U account -d account_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  account-db-data:
